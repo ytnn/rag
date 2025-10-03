@@ -2,7 +2,6 @@ import requests
 from bs4 import BeautifulSoup
 import os
 import json
-import shutil
 import re
 
 lotr_links = [
@@ -62,7 +61,6 @@ def download():
         html = requests.get(url).text
         soup = BeautifulSoup(html, "html.parser")
 
-        # берём только параграфы
         paragraphs = [p.get_text() for p in soup.find_all("p")]
         text = "\n".join(paragraphs)
 
@@ -96,6 +94,16 @@ def process_files():
 
         if not os.path.isfile(src_path):
             continue
+
+        root, ext = os.path.splitext(fname)
+
+        if root in terms_map:
+            new_root = terms_map[root]
+            new_fname = new_root + ext
+        else:
+            new_fname = fname
+
+        dst_path = os.path.join(TARGET_DIR, new_fname)
 
         with open(src_path, "r", encoding="utf-8") as f:
             content = f.read()
