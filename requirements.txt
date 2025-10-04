@@ -1,0 +1,9 @@
+faiss-cpu
+sentence-transformers
+scikit-learn
+rank_bm25
+openai
+langchain
+numpy
+beautifulsoup4
+requests
