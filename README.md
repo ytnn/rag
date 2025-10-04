@@ -22,3 +22,11 @@
 - Запускаемый скрипт: [rag_bot.py](https://raw.githubusercontent.com/ytnn/rag/refs/heads/dev/src/rag_bot.py)
 - Примеры 3–5 успешных диалогов:
 - Примеры одного-двух случаев, когда бот будет отвечать: «Я не знаю»:
+
+<img width="1644" height="363" alt="image" src="https://github.com/user-attachments/assets/ba5135c3-e0d5-4292-9f90-5948ffc8c004" />
+<img width="1629" height="397" alt="image" src="https://github.com/user-attachments/assets/a936bf8d-644a-44ae-a3f4-0ae32c1e84f8" />
+<img width="1638" height="392" alt="image" src="https://github.com/user-attachments/assets/68e43a17-b771-483a-8fb0-64f67e103e70" />
+<img width="1656" height="225" alt="image" src="https://github.com/user-attachments/assets/d36cb09d-a16d-44f9-9f61-9d08ac3bce81" />
+<img width="1654" height="380" alt="image" src="https://github.com/user-attachments/assets/7a6eab5f-87e9-4e76-bab3-409aba87312c" />
+
+
