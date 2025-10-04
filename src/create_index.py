@@ -1,23 +1,24 @@
 import os
 import json
+import time
+import numpy as np
+import faiss
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from sentence_transformers import SentenceTransformer
-import faiss
-import numpy as np
 
 SOURCE_DIR = "knowledge_base"
 INDEX_DIR = "index"
 os.makedirs(INDEX_DIR, exist_ok=True)
 
-CHUNK_SIZE = 300   
-CHUNK_OVERLAP = 50 
+CHUNK_SIZE = 300
+CHUNK_OVERLAP = 50
 
 EMBEDDING_MODEL_NAME = "all-MiniLM-L6-v2"
 embedding_model = SentenceTransformer(EMBEDDING_MODEL_NAME)
 EMBEDDING_DIM = embedding_model.get_sentence_embedding_dimension()
 print(f"Используемая модель: {EMBEDDING_MODEL_NAME}, размер эмбеддингов: {EMBEDDING_DIM}")
 
-index = faiss.IndexFlatL2(EMBEDDING_DIM)
+index = faiss.IndexFlatIP(EMBEDDING_DIM)
 metadata_list = []
 
 def split_text(file_path):
@@ -27,8 +28,9 @@ def split_text(file_path):
         chunk_size=CHUNK_SIZE,
         chunk_overlap=CHUNK_OVERLAP
     )
-    chunks = splitter.split_text(text)
-    return chunks
+    return splitter.split_text(text)
+
+start_time = time.time()
 
 chunk_id = 0
 for fname in os.listdir(SOURCE_DIR):
@@ -37,19 +39,24 @@ for fname in os.listdir(SOURCE_DIR):
         
     file_path = os.path.join(SOURCE_DIR, fname)
     chunks = split_text(file_path)
-    
     print(f"{fname}: {len(chunks)} чанков")
-    
+
+    embeddings = embedding_model.encode(chunks, show_progress_bar=True)
+    embeddings = np.array(embeddings, dtype='float32')
+    faiss.normalize_L2(embeddings)
+
+    index.add(embeddings)
+
     for i, chunk in enumerate(chunks):
-        emb = embedding_model.encode(chunk)
-        emb = np.array([emb], dtype='float32')
-        index.add(emb)
         metadata_list.append({
             "file": fname,
             "chunk_id": i,
             "text": chunk
         })
         chunk_id += 1
+
+end_time = time.time()
+print(f"\nВремя генерации эмбеддингов и индексации: {end_time - start_time:.2f} секунд")
 
 faiss.write_index(index, os.path.join(INDEX_DIR, "faiss.index"))
 print(f"FAISS индекс сохранён: {os.path.join(INDEX_DIR, 'faiss.index')}")
@@ -59,9 +66,14 @@ with open(os.path.join(INDEX_DIR, "metadata.json"), "w", encoding="utf-8") as f:
 
 print(f"Всего чанков в индексе: {chunk_id}")
 
-query = "Кто такой дурислав?"
+query = "Кто такой Логоваз?"
 query_vector = embedding_model.encode([query])
-D, I = index.search(np.array(query_vector, dtype=np.float32), k=3)
-for idx in I[0]:
-    print(metadata_list[idx]["file"], metadata_list[idx]["text"][:200])
+query_vector = np.array(query_vector, dtype='float32')
+faiss.normalize_L2(query_vector)
 
+D, I = index.search(query_vector, k=5)
+
+print("\n=== Результаты поиска " + query)
+for idx, score in zip(I[0], D[0]):
+    print(f"{metadata_list[idx]['file']} ({score:.3f})")
+    print(metadata_list[idx]["text"][:200])
