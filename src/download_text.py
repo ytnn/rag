@@ -81,7 +81,7 @@ def clean_dir(dir):
     os.makedirs(dir, exist_ok=True)
     
     for fname in os.listdir(dir):
-        if fname != "terms_map.json" and fname != "downloads":
+        if fname != "terms_map.json" and fname != "downloads" and fname != "malicious.txt":
             os.remove(os.path.join(dir, fname))
 
 def process_files():

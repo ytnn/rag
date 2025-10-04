@@ -1,0 +1,12 @@
+services:
+  rag-bot:
+    build: .
+    container_name: rag-bot
+    volumes:
+      - ./src:/app/src
+      - ./src/knowledge_base:/app/knowledge_base
+      - ./src/index:/app/index
+    environment:
+      - OPENAI_API_KEY=
+    stdin_open: true
+    tty: true
