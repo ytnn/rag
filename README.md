@@ -1,3 +1,19 @@
+## Работа с ботом
+
+В начале необходимо указать Open AI API-KEY  в docker-compose.yml и rag_bot.py
+
+**Для запуска в докере** сначала сбилдить образ:
+
+
+``docker compose build``
+
+Потом запустить:
+
+
+``docker compose run --rm -it rag-bot``
+
+**Для запуска вручную** зайти в папку src, выбрать соответствующий файл и запустить его, установив зависимости.
+
 ## Задание 2. Подготовка базы знаний
 
 ### По итогу задания у вас должно получиться: 
@@ -28,5 +44,23 @@
 <img width="1638" height="392" alt="image" src="https://github.com/user-attachments/assets/68e43a17-b771-483a-8fb0-64f67e103e70" />
 <img width="1656" height="225" alt="image" src="https://github.com/user-attachments/assets/d36cb09d-a16d-44f9-9f61-9d08ac3bce81" />
 <img width="1654" height="380" alt="image" src="https://github.com/user-attachments/assets/7a6eab5f-87e9-4e76-bab3-409aba87312c" />
+
+## Задание 5. Запуск и демонстрация работы бота
+
+### Результат
+Без фильтрации:
+<img width="1638" height="349" alt="image" src="https://github.com/user-attachments/assets/f75e25ae-5c8c-4f83-897d-e7c4379eba13" />
+
+Добавил пре-промпт - не помогло:
+
+<img width="848" height="329" alt="image" src="https://github.com/user-attachments/assets/3fa8c2b0-0c50-419b-9cd0-56202adca413" />
+
+Добавил функцию фильтрации запрещенных слов в чанках - сработало
+
+<img width="838" height="422" alt="image" src="https://github.com/user-attachments/assets/556a7044-115d-4f00-a996-bd361f497ed6" />
+
+**Вывод**: пре-промпт фильтрация не обеспечивает желаемый уровень защиты, т.к. по сути явлется скорее рекомендацией модели, а не жестким правилом. Для обеспечения зажиты секретов необходимо реализовывать фильтрующие функции для очистки чанков от чувствительных данных.
+
+
 
 
